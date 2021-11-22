@@ -4,7 +4,7 @@ Author: Luke Frazer
 This is the code for the Zendesk Coding Challenge for possible upcoming interns. 
 This is a ticket viewer that will import all tickets from my Zendesk account and allow the user to navigate through them using a command line. 
 
-=-----------------------------------------------------------------------------------------------------------------------------------------------=
+=----------------------------------------------------------------------------------------------------------------------------------=
 
 This code was written and tested using the Eclipse IDE
 The two code files for this challenge are located under Zendesk_Coding_Challenge\src\zcc_package\
