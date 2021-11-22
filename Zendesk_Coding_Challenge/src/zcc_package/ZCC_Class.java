@@ -5,7 +5,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import org.json.*;
@@ -41,40 +40,123 @@ public class ZCC_Class
       }
       
       /**
-       * Pings the selected URL to check if it is available
-       * 
-       * @param host - URL of the site to be reached
-       * 
-       * @param port - port number of site, 443 for HTTPS, 80 for HTTP
-       * 
-       * @param timeout - time to wait for the connection to establish
-       * 
-       * @return boolean result of if the URL is online
+       * User interface portion
+       * <p>
+       * allows user to chose to print all tickets, search for ticket, or exit
        */
-      public boolean pingHost(String host, int port, int timeout) 
-         {
-         // attempts to connect to the inputed host url
-         try (Socket socket = new Socket()) 
+      public void callMenu()
+      {
+         // initialize variables
+         String separator = "=-------------------------=";
+         String inputVal, jsonFile = "tickets.json";
+         int index;
+         boolean exitLoop = false;
+         
+         // display the menu screen
+         System.out.println( "Welcome to the Zendesk ticket viewer!" );
+         
+         while( !exitLoop )
             {
-               // connect to the host
-               socket.connect(new InetSocketAddress(host, port), timeout);
+               System.out.println( "Please select a menu option "
+                                 + "using numbers 1-3" );
+               System.out.println();
                
-               // print that there was a successful connection
-               System.out.println( "Connection to host: "
-                + "https://zccstudents9733.zendesk.com has been established" ); 
+               // display the view options
+               System.out.println( separator );
+               System.out.println( "[1] View all tickets");
+               System.out.println( separator );
+               System.out.println( "[2] View a specific ticket");
+               System.out.println( separator );
+               System.out.println( "[3] Quit the ticket viewer");
+               System.out.println( separator );
+               System.out.println();
+      
+               // print the input line
+               System.out.print( "YOUR INPUT: ");
                
-               // return true
-               return true;
-            } 
-         catch (IOException e) 
-            {
-               // print that there was NOT a successful connection
-               System.out.println( "Failure to connect to host: "
-                + "https://zccstudents9733.zendesk.com" ); 
+               // take in the user input using the scanner utility
+               SCAN = new Scanner( System.in );
+               inputVal = SCAN.nextLine();
                
-               // Either timeout or unreachable or failed DNS lookup.
-               return false; 
+               // check for user's choice and print the appropriate response
+               switch(inputVal)
+               {
+                  case "1":
+                     // print out appropriate message and call to read out json
+                     System.out.println("You have chosen to view all tickets:");
+                     System.out.println();
+                     
+                     // call method to read the json file
+                     readJSON( jsonFile );
+                     break;
+                  case "2":
+                     // print appropriate message and call to search for ticket
+                     System.out.println("You have chosen to view a "
+                                      + "specific ticket:");
+                     System.out.println();
+                     System.out.print( "Enter a Ticket number: " );
+                     
+                     // take the user's input for the ticket number to search
+                     index = SCAN.nextInt();
+                     System.out.println();
+                     searchTicket( jsonFile, index );
+                     break;
+                  case "3":
+                     // print out appropriate message and end the program
+                     System.out.println( "You have chosen quit the "
+                                       + "ticket viewer:");
+                     System.out.println();
+                     exitLoop = true;
+                     break;
+                  default:
+                     // print out message that it was not a valid input and end
+                     System.out.println("I'm sorry, that is not a valid input");
+                     System.out.println();
+                     break;
+               }
             }
+         
+         // close the scanner
+         SCAN.close();
+      }
+      
+      /**
+       * imports json and converts it to an array
+       * 
+       * @param inFile - name/file path of json file to be parsed and printed
+       * 
+       * @return array element of the json file
+       */
+      private JSONArray convertJSONToArray( String inFile )
+      {
+         // initialize variables
+         JSONArray jArray = null;
+         JSONObject jsonFile;
+         String json;
+         
+         // attempt to convert imported file to a string array
+         try
+            {
+               // use Files library to read the bytes of the imported string
+               // and convert to a string names "json"
+               json = new String( Files.readAllBytes( Paths.get( inFile ) ) );
+               
+               // set the json file string to a jsonObject variable
+               jsonFile = new JSONObject(json.toString());
+               
+               // create ticket array by finding all values under name "tickets"
+               jArray = jsonFile.getJSONArray( "tickets" );
+            }
+         catch (IOException e)
+            {
+               e.printStackTrace();
+               // print friendly error message
+               System.out.println("The file could not be converted to a String,"
+                                + "please try a different file");
+            }
+         
+         // return the json array
+         return jArray;
       }
       
       /**
@@ -133,6 +215,7 @@ public class ZCC_Class
                      callMenu();
                      
                   } 
+               
                // otherwise, throw the error message
                catch (IOException e)
                   {
@@ -160,6 +243,43 @@ public class ZCC_Class
                System.out.println( "Please try again another time");
             }
          
+      }
+      
+      /**
+       * Pings the selected URL to check if it is available
+       * 
+       * @param host - URL of the site to be reached
+       * 
+       * @param port - port number of site, 443 for HTTPS, 80 for HTTP
+       * 
+       * @param timeout - time to wait for the connection to establish
+       * 
+       * @return boolean result of if the URL is online
+       */
+      public boolean pingHost(String host, int port, int timeout) 
+         {
+         // attempts to connect to the inputed host url
+         try (Socket socket = new Socket()) 
+            {
+               // connect to the host
+               socket.connect(new InetSocketAddress(host, port), timeout);
+               
+               // print that there was a successful connection
+               System.out.println( "Connection to host: "
+                + "https://zccstudents9733.zendesk.com has been established" ); 
+               
+               // return true
+               return true;
+            } 
+         catch (IOException e) 
+            {
+               // print that there was NOT a successful connection
+               System.out.println( "Failure to connect to host: "
+                + "https://zccstudents9733.zendesk.com" ); 
+               
+               // Either timeout or unreachable or failed DNS lookup.
+               return false; 
+            }
       }
       
       /**
@@ -290,19 +410,8 @@ public class ZCC_Class
             System.out.print( "Please choose a page to navigate to or choose "
                             + "(0) to exit to main menu: " );
       
-            // try to take in a page value
-            try
-            {
-               // take the user's input for the next page
-               userChoice = SCAN.nextInt();
-            }
-            
-            // catch if the value was not an integer
-            catch (InputMismatchException e)
-               {
-                  System.out.println( "That value was not a number, please"
-                        + " enter a number: " );
-               }
+            // take the user's input for the next page
+            userChoice = SCAN.nextInt();
             System.out.println();
             
             // loop until the user enter's a valid page number to navigate to
@@ -317,126 +426,6 @@ public class ZCC_Class
                   userChoice = SCAN.nextInt();
                }
             }
-      }
-      
-      /**
-       * User interface portion
-       * <p>
-       * allows user to chose to print all tickets, search for ticket, or exit
-       */
-      public void callMenu()
-      {
-         // initialize variables
-         String separator = "=-------------------------=";
-         String inputVal, jsonFile = "tickets.json";
-         int index;
-         boolean exitLoop = false;
-         
-         // display the menu screen
-         System.out.println( "Welcome to the Zendesk ticket viewer!" );
-         
-         while( !exitLoop )
-            {
-               System.out.println( "Please select a menu option "
-                                 + "using numbers 1-3" );
-               System.out.println();
-               
-               // display the view options
-               System.out.println( separator );
-               System.out.println( "[1] View all tickets");
-               System.out.println( separator );
-               System.out.println( "[2] View a specific ticket");
-               System.out.println( separator );
-               System.out.println( "[3] Quit the ticket viewer");
-               System.out.println( separator );
-               System.out.println();
-      
-               // print the input line
-               System.out.print( "YOUR INPUT: ");
-               
-               // take in the user input using the scanner utility
-               SCAN = new Scanner( System.in );
-               inputVal = SCAN.nextLine();
-               
-               // check for user's choice and print the appropriate response
-               switch(inputVal)
-               {
-                  case "1":
-                     // print out appropriate message and call to read out json
-                     System.out.println("You have chosen to view all tickets:");
-                     System.out.println();
-                     
-                     // call method to read the json file
-                     readJSON( jsonFile );
-                     break;
-                  case "2":
-                     // print appropriate message and call to search for ticket
-                     System.out.println("You have chosen to view a "
-                                      + "specific ticket:");
-                     System.out.println();
-                     System.out.print( "Enter a Ticket number: " );
-                     
-                     // take the user's input for the ticket number to search
-                     index = SCAN.nextInt();
-                     System.out.println();
-                     searchTicket( jsonFile, index );
-                     break;
-                  case "3":
-                     // print out appropriate message and end the program
-                     System.out.println( "You have chosen quit the "
-                                       + "ticket viewer:");
-                     System.out.println();
-                     exitLoop = true;
-                     break;
-                  default:
-                     // print out message that it was not a valid input and end
-                     System.out.println("I'm sorry, that is not a valid input");
-                     System.out.println();
-                     break;
-               }
-            }
-         
-         // close the scanner
-         SCAN.close();
-      }
-      
-      /**
-       * imports json and converts it to an array
-       * 
-       * @param inFile - name/file path of json file to be parsed and printed
-       * 
-       * @return array element of the json file
-       */
-      private JSONArray convertJSONToArray( String inFile )
-      {
-         // initialize variables
-         JSONArray jArray = null;
-         JSONObject jsonFile;
-         String json;
-         
-         // attempt to convert imported file to a string array
-         try
-            {
-               // use Files library to read the bytes of the imported string
-               // and convert to a string names "json"
-               json = new String( Files.readAllBytes( Paths.get( inFile ) ) );
-               
-               // set the json file string to a jsonObject variable
-               jsonFile = new JSONObject(json.toString());
-               
-               // create ticket array by finding all values under name "tickets"
-               jArray = jsonFile.getJSONArray( "tickets" );
-            }
-         catch (IOException e)
-            {
-               e.printStackTrace();
-               // print friendly error message
-               System.out.println("The file could not be converted to a String,"
-                                + "please try a different file");
-            }
-         
-         // return the json array
-         return jArray;
       }
       
       /**
