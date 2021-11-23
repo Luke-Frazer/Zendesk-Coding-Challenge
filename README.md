@@ -15,8 +15,8 @@ The constants TOKEN, EMAIL, SUBDOMAIN, AND SUBDOMAIN_URL get assigned to environ
 When using your own environmental variables:
     the TOKEN is the API token generated for authentication within Zendesk; it is a long string of random characters. 
     The EMAIL is self explanatory (ex: john.smith@zendesk.com or john.smith@gmail.com)
-    The SUBDOMAIN is the full url of whatever subdomain you use in the format: https://<subdomain>.zendesk.com
-    The SUBDOMAIN_URL is similar to the subdomain string, however it is in the format: www.<subdomain>.zendesk.com
+    The SUBDOMAIN is the full url of whatever subdomain you use in the format: https://{subdomain}.zendesk.com
+    The SUBDOMAIN_URL is similar to the subdomain string, however it is in the format: www.{subdomain}.zendesk.com
   
 With these variables, the code will establish the connection and let the user know in the command line, then run the menu for navigation and viewing the tickets. 
   
