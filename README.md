@@ -48,7 +48,7 @@ NOTE: If for some reason it fails to connect and you are sure you inputted the c
 
 This code was written and tested using the Eclipse IDE.
 
-The code file for this challenge is located under `Zendesk_Coding_Challenge\src\zcc_package\`.
+The code file for this challenge is located under the folder: `Zendesk_Coding_Challenge\src\zcc_package\`.
 
 The code file is: `ZCC_Class.java`. I originally split it up into a class file and a main file, but it is significanly easier to run through the cmd when it is all in one file. Thus, I updated the code to run in the class file with the main(). 
 
@@ -59,6 +59,16 @@ Each method runs a small piece of the overall system, allowing for modularity an
 The methods are able to account if the values that are too large or small, if the api is unavailable, as well as other possible issues along the way.
 
 I hope that this code is what Zendesk is looking for and I look forward to any possible next steps in the process. 
+
+=---------------------------------------------------------------------------------------------------------------------------=
+
+UNIT TESTING:
+
+I had an approach for unit testing that the whole program should run through a single getProcess(), allowing for simplicity of use. Additionally, this allows for simple bug fixing due to the code being sectioned into individual methods for specific uses and thus, only one location for any set of code. 
+
+Additionally, from my testing, I was able to enter any given values without errors due to my many checks for any given values in addition to many exception catches throughout the code. 
+
+The code accounts for the API/website being unavailable, invalid menu options, invalid search options, invalid page options, the tickets.json not being available, invalid credentials being entered, issues importing data, etc. 
 
 
   
