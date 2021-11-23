@@ -27,21 +27,41 @@ public class ZCC_Class
    {
       
       /**
+       * @param args
+       */
+      public static void main(String[] args)
+         {
+            
+            // start the process
+            getProcess();
+            
+            // pings the host and prints result to user
+               // commented out as the getProcess() method includes this method
+               // but this is included as a unit test for this method
+            // ZCC.pingHost( "www.zccstudents9733.zendesk.com", 443, 50 );
+            
+            // calls main menu to navigate through json file
+               // commented out as the getProcess() method includes this method
+               // but this is included as a unit test for this method
+            // ZCC.callMenu();
+         }
+      
+      /**
        * global scanner constant for taking in data from user
        */
-      public Scanner SCAN = null;
+      public static Scanner SCAN = null;
       
       // create the token string
-      private final String TOKEN = System.getenv("TOKEN");
+      private static final String TOKEN = System.getenv("TOKEN");
       
       // get email string
-      private final String EMAIL = System.getenv( "EMAIL" );
+      private static final String EMAIL = System.getenv( "EMAIL" );
       
       // get subdomain string
-      private final String SUBDOMAIN = System.getenv( "SUBDOMAIN" );
+      private static final String SUBDOMAIN = System.getenv( "SUBDOMAIN" );
       
       // get subdomian url
-      private final String SUBDOMAIN_URL = System.getenv( "SUBDOMAIN_URL" );
+      private static final String SUBDOMAIN_URL = System.getenv( "SUBDOMAIN_URL" );
       
       /**
        * Default constructor, does nothing in this case
@@ -55,7 +75,7 @@ public class ZCC_Class
        * <p>
        * allows user to chose to print all tickets, search for ticket, or exit
        */
-      public void callMenu()
+      public static void callMenu()
       {
          // initialize variables
          String separator = "=-------------------------=";
@@ -138,7 +158,7 @@ public class ZCC_Class
        * 
        * @return array element of the json file
        */
-      private JSONArray convertJSONToArray( String inFile )
+      private static JSONArray convertJSONToArray( String inFile )
       {
          // initialize variables
          JSONArray jArray = null;
@@ -175,7 +195,7 @@ public class ZCC_Class
        * them to tickets.json in the current Zendesk_Coding_Challenge directory
        * before calling the main menu of the program
        */
-      public void getProcess()
+      public static void getProcess()
       {
          // initialize variables
          boolean isConnected;
@@ -195,7 +215,7 @@ public class ZCC_Class
          ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
          
          // check to make sure that the connection is established first
-         isConnected = pingHost( SUBDOMAIN_URL, 443, 50 );
+         isConnected = pingHost( SUBDOMAIN_URL, 443, 300 );
          
          // if there is a connection, attempt to retrieve the requests
          if( isConnected )
@@ -264,7 +284,7 @@ public class ZCC_Class
        * 
        * @return boolean result of if the URL is online
        */
-      public boolean pingHost(String host, int port, int timeout) 
+      public static boolean pingHost(String host, int port, int timeout) 
          {
          // attempts to connect to the inputed host url
          try (Socket socket = new Socket()) 
@@ -295,7 +315,7 @@ public class ZCC_Class
        * 
        * @param inFile - name/file path of json file to be parsed and printed
        */
-      public void readJSON( String inFile )
+      public static void readJSON( String inFile )
       {
          // initialize variables
          String separator = "#===============================================#";
@@ -443,7 +463,7 @@ public class ZCC_Class
        * 
        * @param index - integer value of the ticket number to be searched
        */
-      public void searchTicket( String inFile, int index )
+      public static void searchTicket( String inFile, int index )
       {
          // initialize variables
          String separator = "#===============================================#";
