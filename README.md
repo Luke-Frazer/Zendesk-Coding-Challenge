@@ -8,13 +8,13 @@ This is a ticket viewer that will import all tickets from my Zendesk account and
 
 INSTRUCTIONS FOR USING THIS CODE WITH YOUR OWN CREDENTIALS:
 
-I used environmental variables within Eclipse to keep my credentials secure. 
+I used environmental variables to keep my credentials secure. 
 
 The constants TOKEN, EMAIL, SUBDOMAIN, AND SUBDOMAIN_URL get assigned to environmental variables under the exact same labels. 
 
 When using your own environmental variables:
 
-At Lines 35-44 in `ZCC_Class.java`, You can change either the environmental variable keys in `System.getenv( "{KEY}" )` to your appropriate key for testing or change the entire `System.getenv()` call for each constant to a String (ex: `private final String EMAIL = "john.smith@gmail.com";`
+You can set the environmental variables in the command prompt with the command `set EMAIL=john.smith@gmail.com` for every environmental variable. The code will be able to read your system env variables this way and run the code based on the inputted credentials.
 
 The TOKEN is the API token generated for authentication within Zendesk; it is a long string of random characters. 
     
@@ -25,16 +25,32 @@ The SUBDOMAIN is the full url of whatever subdomain you use in the format: `http
 The SUBDOMAIN_URL is similar to the subdomain string, however it is in the format: `www.{subdomain}.zendesk.com`
   
 With these variables, the code will establish the connection and let the user know in the command line, then run the menu for navigation and viewing the tickets. 
+
+=---------------------------------------------------------------------------------------------------------------------------=
+
+FOR RUNNING IN THE COMMAND LINE AFTER INPUTING ENVIRONMENTAL VARIABLES:
+
+The code can be run using the javac and java command. For this reason, ensure the system has the Java jdk: `https://www.oracle.com/java/technologies/downloads/`.
+
+Once the JDK is installed, navigate to the folder Zendesk_Coding_Challenge.
+
+Now, to compile the code, run the command: `javac -cp ./json-20210307.jar src/zcc_package/ZCC_Class.java`
+
+Once this is compiled, there should be no errors and it should just open a new line for a command. 
+
+Now, enter the command: `java src/zcc_package/ZCC_Class.java`.
+
+This will run the program, show if the connection was successful, and then allow navigation through the tickets. 
+
+NOTE: If for some reason it fails to connect and you are sure you inputted the correct url, give it another few tries and it should connect. 
   
 =---------------------------------------------------------------------------------------------------------------------------=
 
 This code was written and tested using the Eclipse IDE.
 
-The two code files for this challenge are located under `Zendesk_Coding_Challenge\src\zcc_package\`.
+The code file for this challenge is located under `Zendesk_Coding_Challenge\src\zcc_package\`.
 
-There are two files, `ZCC_Class.java` and `ZCC_Main.java`.
-
-The ZCC_Class is the tool class that holds all methods and variables to be executed in ZCC_Main in order to run the Ticket Viewer.
+The code file is: `ZCC_Class.java`. I originally split it up into a class file and a main file, but it is significanly easier to run through the cmd when it is all in one file. Thus, I updated the code to run in the class file with the main(). 
 
 The method: getProcess() is the primary driver for the ticket viewer, as it calls all other methods for running the Ticket Viewer. 
 
