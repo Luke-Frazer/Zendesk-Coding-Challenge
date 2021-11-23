@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import org.json.*;
@@ -61,7 +62,7 @@ public class ZCC_Class
       private static final String SUBDOMAIN = System.getenv( "SUBDOMAIN" );
       
       // get subdomian url
-      private static final String SUBDOMAIN_URL = System.getenv( "SUBDOMAIN_URL" );
+      private static final String SUBDOMAIN_URL =System.getenv("SUBDOMAIN_URL");
       
       /**
        * Default constructor, does nothing in this case
@@ -80,8 +81,8 @@ public class ZCC_Class
          // initialize variables
          String separator = "=-------------------------=";
          String inputVal, jsonFile = "tickets.json";
-         int index;
-         boolean exitLoop = false;
+         int index = 0;
+         boolean exitLoop = false, inputIncorrect = true;
          
          // display the menu screen
          System.out.println( "Welcome to the Zendesk ticket viewer!" );
@@ -127,8 +128,30 @@ public class ZCC_Class
                      System.out.println();
                      System.out.print( "Enter a Ticket number: " );
                      
-                     // take the user's input for the ticket number to search
-                     index = SCAN.nextInt();
+                     // accept user input while the input is not valid
+                     while( inputIncorrect )
+                        {
+                           // attempt to take in a user integer
+                           try
+                              {
+                                 // take the user's input for the next page
+                                 index = SCAN.nextInt();
+                                 System.out.println();
+                                 
+                                 // set incorrect input to false
+                                 inputIncorrect = false;
+                           }
+                           // catch if the input is not an int
+                           catch( InputMismatchException e)
+                              {
+                                 // tell user to enter an integer value
+                                 System.out.println("Please enter an integer "
+                                                   + "value");
+                               
+                                 // move the scanner to a new line
+                                 SCAN.next();
+                              }
+                        }
                      System.out.println();
                      searchTicket( jsonFile, index );
                      break;
@@ -163,7 +186,7 @@ public class ZCC_Class
          // initialize variables
          JSONArray jArray = null;
          JSONObject jsonFile;
-         String json;
+         String json = null;
          
          // attempt to convert imported file to a string array
          try
@@ -172,22 +195,44 @@ public class ZCC_Class
                // and convert to a string names "json"
                json = new String( Files.readAllBytes( Paths.get( inFile ) ) );
                
-               // set the json file string to a jsonObject variable
-               jsonFile = new JSONObject(json.toString());
-               
+            }
+         catch ( IOException e )
+            {
+               // call exit program to prevent error
+               exitProgram();
+            }
+         
+         // set the json file string to a jsonObject variable
+         jsonFile = new JSONObject(json.toString());
+         
+         // attempt to create the json array
+         try
+            {
                // create ticket array by finding all values under name "tickets"
                jArray = jsonFile.getJSONArray( "tickets" );
             }
-         catch (IOException e)
+         // catch if there is an issue converting to array due to json issue
+         catch ( JSONException e )
             {
-               e.printStackTrace();
-               // print friendly error message
-               System.out.println("The file could not be converted to a String,"
-                                + "please try a different file");
+               // exit the program to prevent error
+               exitProgram();
             }
          
          // return the json array
          return jArray;
+      }
+      
+      /**
+       * exits the program with display message
+       */
+      private static void exitProgram()
+      {
+         // print message to try different credentials or subdomain
+         System.out.println("There was an issue loading the data, \ncheck "
+                          + "that your credentials and subdomain are correct.");
+         
+         // exit the program
+         System.exit(0);
       }
       
       /**
@@ -255,7 +300,7 @@ public class ZCC_Class
                      // throw error message
                      e.printStackTrace();
                      System.out.println( "There was an issue "
-                                                      + "importing the data" );
+                                       + "importing the data" );
                   }
             }
          
@@ -325,6 +370,7 @@ public class ZCC_Class
          JSONArray tickets;
          int id, pages, currentTicket, pageIndex, finalPage;
          int userChoice = 1, exit = 0, end = 0;
+         boolean inputIncorrect = true;
          
          // convert the inputed file to an array and save to variable
          tickets = convertJSONToArray( inFile );
@@ -354,105 +400,128 @@ public class ZCC_Class
          // loop until the user chooses to exit
          while( userChoice != exit )
             {
-            // find the current page
-            currentTicket = ( userChoice - 1 ) * 25;
+               // reset incorrect flag
+               inputIncorrect = true;
+               
+               // find the current page
+               currentTicket = ( userChoice - 1 ) * 25;
             
-            // find the ending index of the current page
-            end = currentTicket + 25;
+               // find the ending index of the current page
+               end = currentTicket + 25;
             
-            // find final page count
-            if( userChoice == pages - 1 )
-               {
-                  // find the end to the final page
-                  end = currentTicket + finalPage;
-               }
+               // find final page count
+               if( userChoice == pages - 1 )
+                  {
+                     // find the end to the final page
+                     end = currentTicket + finalPage;
+                  }
             
-            // loop through all tickets
-            while( currentTicket < end )
-               {
-                  // set the current individual ticket at the index
-                  ticket = tickets.getJSONObject( currentTicket );
-                  
-                  // save the subject of the current ticket
-                  subject = ticket.optString( "subject" );
-                        
-                  // save the description of the current ticket
-                  description = ticket.optString( "description" );
-                  
-                  // save the status of the current ticket
-                  status = ticket.optString( "status" );
-                        
-                  // save the date and time of last updated
-                  lastUpdated = ticket.optString( "updated_at");
-                        
-                  // save the id of the current ticket to identify where
-                  //  we are in the overall ticket count
-                  id = ticket.getInt( "id" );
-                        
-                  // print all of the data with spacing
-                  System.out.println( separator );
-                  System.out.println();
-                  System.out.println( "Subject: " + subject );
-                  System.out.println();
-                  System.out.println( "Description: " + description );
-                  System.out.println();
-                  System.out.println( "Status: " + status );
-                  System.out.println();
-                  System.out.println("Ticket last updated: "+lastUpdated);
-                  System.out.println();
-                  System.out.println( "ID: " + id );
-                  System.out.println();
-                        
-                  // increment the ticket
-                  currentTicket++;
-               }
+               // loop through all tickets
+               while( currentTicket < end )
+                  {
+                     // set the current individual ticket at the index
+                     ticket = tickets.getJSONObject( currentTicket );
+                     
+                     // save the subject of the current ticket
+                     subject = ticket.optString( "subject" );
+                           
+                     // save the description of the current ticket
+                     description = ticket.optString( "description" );
+                     
+                     // save the status of the current ticket
+                     status = ticket.optString( "status" );
+                           
+                     // save the date and time of last updated
+                     lastUpdated = ticket.optString( "updated_at");
+                           
+                     // save the id of the current ticket to identify where
+                     //  we are in the overall ticket count
+                     id = ticket.getInt( "id" );
+                           
+                     // print all of the data with spacing
+                     System.out.println( separator );
+                     System.out.println();
+                     System.out.println( "Subject: " + subject );
+                     System.out.println();
+                     System.out.println( "Description: " + description );
+                     System.out.println();
+                     System.out.println( "Status: " + status );
+                     System.out.println();
+                     System.out.println("Ticket last updated: "+lastUpdated);
+                     System.out.println();
+                     System.out.println( "ID: " + id );
+                     System.out.println();
+                           
+                     // increment the ticket
+                     currentTicket++;
+                  }
             
-            // print the separator, marking the end of the current ticket
-            System.out.println();
-            System.out.println( separator );
-            System.out.println();
-            
-            // print pages line
-            System.out.println( "PAGES" );
-            
-            // print the page numbers
-            for( pageIndex = 1; pageIndex < pages; pageIndex++ )
-               {
-                  // check if currentPage
-                  if( pageIndex == userChoice )
-                     {
-                        // print the page number with brackets
-                        System.out.print( "[" + pageIndex + "]   " );
+               // print the separator, marking the end of the current ticket
+               System.out.println();
+               System.out.println( separator );
+               System.out.println();
+               
+               // print pages line
+               System.out.println( "PAGES" );
+               
+               // print the page numbers
+               for( pageIndex = 1; pageIndex < pages; pageIndex++ )
+                  {
+                     // check if currentPage
+                     if( pageIndex == userChoice )
+                        {
+                           // print the page number with brackets
+                           System.out.print( "[" + pageIndex + "]   " );
+                        }
+                     
+                     // otherwise, assume not current page
+                     else
+                        {
+                           // print the page normally
+                           System.out.print( pageIndex + "   " );
+                        }
+                  }
+               
+               // print the line to accept the user's next page
+               System.out.println();
+               System.out.print("Please choose a page to navigate to or choose "
+                              + "(0) to exit to main menu: " );
+               
+               // accept user input while the input is not valid
+               while( inputIncorrect )
+                  {
+                     // attempt to take in a user integer
+                     try
+                        {
+                           // take the user's input for the next page
+                           userChoice = SCAN.nextInt();
+                           System.out.println();
+                           
+                           // set incorrect input to false
+                           inputIncorrect = false;
                      }
-                  
-                  // otherwise, assume not current page
-                  else
-                     {
-                        // print the page normally
-                        System.out.print( pageIndex + "   " );
-                     }
-               }
+                     // catch if the input is not an int
+                     catch( InputMismatchException e)
+                        {
+                           // tell user to enter an integer value
+                           System.out.println("Please enter an integer value");
+                         
+                           // move the scanner to a new line
+                           SCAN.next();
+                        }
+                  }
             
-            // print the line to accept the user's next page
-            System.out.println();
-            System.out.print( "Please choose a page to navigate to or choose "
-                            + "(0) to exit to main menu: " );
-      
-            // take the user's input for the next page
-            userChoice = SCAN.nextInt();
-            System.out.println();
-            
-            // loop until the user enter's a valid page number to navigate to
-            while( userChoice < 0 || userChoice >= pages )
-               {
-                  // print a message to enter a valid page
-                  System.out.println( "I'm sorry, the page number you "
-                                    + "entered was not valid" );
-                  System.out.println();
-                  
-                  // take the user's input for the next page
-                  userChoice = SCAN.nextInt();
-               }
+               // loop until the user enter's a valid page number to navigate to
+               while( userChoice < 0 || userChoice >= pages )
+                  {
+                     // print a message to enter a valid page
+                     System.out.println( "I'm sorry, the page number you "
+                                       + "entered was not valid" );
+                     System.out.println();
+                     
+                     // take the user's input for the next page
+                     userChoice = SCAN.nextInt();
+                  }
             }
       }
       
