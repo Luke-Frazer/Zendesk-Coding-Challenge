@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 import org.json.*;
 
-
 /**
  * 
  * @author Luke Frazer
@@ -31,6 +30,18 @@ public class ZCC_Class
        * global scanner constant for taking in data from user
        */
       public Scanner SCAN = null;
+      
+      // create the token string
+      private final String TOKEN = System.getenv("TOKEN");
+      
+      // get email string
+      private final String EMAIL = System.getenv( "EMAIL" );
+      
+      // get subdomain string
+      private final String SUBDOMAIN = System.getenv( "SUBDOMAIN" );
+      
+      // get subdomian url
+      private final String SUBDOMAIN_URL = System.getenv( "SUBDOMAIN_URL" );
       
       /**
        * Default constructor, does nothing in this case
@@ -169,25 +180,22 @@ public class ZCC_Class
          // initialize variables
          boolean isConnected;
          Process process;
-         String token, command;
+         String command;
          String lineSeparator = "/------------------------------------------\\";
          String dataSeparator = "\\------------------------------------------/";
          String successMsg = "Data successfully imported";
          String spacing = "         ";
          
-         // create the token string
-         token = "4o7ou4l8wbcKhGRhI1UHHBGEJVxjB7a41JHJpOTd";
-         
          // create the command string for 
          command = "curl -o tickets.json "
-               + "https://zccstudents9733.zendesk.com/api/v2/tickets.json"
-               + "-v -u luke.e.frazer@gmail.com/token:" + token;
+               + SUBDOMAIN + "/api/v2/tickets.json"
+               + "-v -u " + EMAIL + "/token:" + TOKEN;
          
          // use the process builder constructor to build the command
          ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
          
          // check to make sure that the connection is established first
-         isConnected = pingHost( "www.zccstudents9733.zendesk.com", 443, 50 );
+         isConnected = pingHost( SUBDOMAIN_URL, 443, 50 );
          
          // if there is a connection, attempt to retrieve the requests
          if( isConnected )
@@ -266,7 +274,7 @@ public class ZCC_Class
                
                // print that there was a successful connection
                System.out.println( "Connection to host: "
-                + "https://zccstudents9733.zendesk.com has been established" ); 
+                + SUBDOMAIN_URL + " has been established" ); 
                
                // return true
                return true;
@@ -275,7 +283,7 @@ public class ZCC_Class
             {
                // print that there was NOT a successful connection
                System.out.println( "Failure to connect to host: "
-                + "https://zccstudents9733.zendesk.com" ); 
+                + SUBDOMAIN_URL ); 
                
                // Either timeout or unreachable or failed DNS lookup.
                return false; 
