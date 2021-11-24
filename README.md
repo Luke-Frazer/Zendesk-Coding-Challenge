@@ -38,7 +38,7 @@ Now, to compile the code, run the command: `javac -cp ./json-20210307.jar src/zc
 
 Once this is compiled, there should be no errors and it should just open a new line for a command. 
 
-Now, enter the command: `java src/zcc_package/ZCC_Class.java`.
+Now, enter the command: `java -cp ./json-20210307.jar src/zcc_package/ZCC_Class.java`.
 
 This will run the program, show if the connection was successful, and then allow navigation through the tickets. 
 
