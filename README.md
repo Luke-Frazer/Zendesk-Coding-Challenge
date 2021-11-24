@@ -32,7 +32,7 @@ FOR RUNNING IN THE WINDOWS COMMAND PROMPT (CMD) AFTER INPUTING ENVIRONMENTAL VAR
 
 The code can be run using the javac and java command. For this reason, ensure the system has the Java jdk: `https://www.oracle.com/java/technologies/downloads/`.
 
-Once the JDK is installed, navigate to the folder Zendesk_Coding_Challenge.
+Once the JDK is installed, navigate to the folder Zendesk_Coding_Challenge where the folders bin, src, and doc are located.
 
 Now, to compile the code, run the command: `javac -cp ./json-20210307.jar src/zcc_package/ZCC_Class.java`
 
