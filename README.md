@@ -28,7 +28,7 @@ With these variables, the code will establish the connection and let the user kn
 
 =---------------------------------------------------------------------------------------------------------------------------=
 
-FOR RUNNING IN THE COMMAND LINE AFTER INPUTING ENVIRONMENTAL VARIABLES:
+FOR RUNNING IN THE WINDOWS COMMAND PROMPT (CMD) AFTER INPUTING ENVIRONMENTAL VARIABLES:
 
 The code can be run using the javac and java command. For this reason, ensure the system has the Java jdk: `https://www.oracle.com/java/technologies/downloads/`.
 
