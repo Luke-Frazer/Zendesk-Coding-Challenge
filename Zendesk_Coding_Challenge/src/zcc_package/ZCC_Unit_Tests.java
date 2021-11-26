@@ -16,15 +16,14 @@ import org.json.*;
  * 
  * Zendesk Coding Challenge class
  * <p>
- * Takes in all tickets from my Zendesk account
+ * Unit testing code for ZCC_Class code. 
  * <p>
- * Includes user interface to select to view all tickets, view specific ticket, 
- * or quit the ticket viewer
+ * Takes in a testing json file with a few fake tickets to show code functions
  * <p>
- * When viewing all tickets, allows user to navigate through pages
+ * Does not connect to api for testing. 
  *
  */
-public class ZCC_Class
+public class ZCC_Unit_Tests
    {
       
       /**
@@ -32,9 +31,51 @@ public class ZCC_Class
        */
       public static void main(String[] args)
          {
+            // set the scanner object to the user's input
+            SCAN = new Scanner( System.in );
             
-            // start the process
-            getProcess( "tickets.json" );
+            // print line to show that we are connecting
+            System.out.println( "Attempting to connect to zendesk.com for "
+                              + "testing the pinghost comand: ");
+            
+            // attempt to ping zendesk.com
+            pingHost( "www.zendesk.com", 443, 200 );
+            System.out.println();
+            System.out.println();
+            
+            // print line to let user know it is searching for ticket 2
+            System.out.println( "SEARCHING FOR TICKET NUMBER 2 FOR TESTING: " );
+            System.out.println();
+            System.out.println();
+            
+            // search for ticket 2
+            searchTicket( "test.json", 2 );
+            System.out.println();
+            System.out.println();
+            
+            // print line to let user know it is reading the tickets for testing
+            System.out.println( "READING ALL AVAILABLE TICKETS FOR TESTING: " );
+            System.out.println();
+            System.out.println();
+            
+            // test the readJSON method
+            readJSON( "test.json" );
+            System.out.println();
+            System.out.println();
+            
+            // print line to let user know it is calling the menu for testing
+            System.out.println( "CALLING MAIN MENU FOR TESTING: " );
+            System.out.println();
+            System.out.println();
+            
+            // test the callMenu method
+            callMenu( "test.json" );
+            
+            // print out the raw json file used for testing
+            System.out.print( "Raw JSON File: \n" + 
+                              convertJSONToArray( "test.json" ) );
+            System.out.println();
+            System.out.println();
             
          }
       
@@ -58,7 +99,7 @@ public class ZCC_Class
       /**
        * Default constructor, does nothing in this case
        */
-      public ZCC_Class()
+      public ZCC_Unit_Tests()
       {
       }
       
@@ -102,7 +143,6 @@ public class ZCC_Class
                System.out.print( "YOUR INPUT: ");
                
                // take in the user input using the scanner utility
-               SCAN = new Scanner( System.in );
                inputVal = SCAN.next();
                
                // check for user's choice and print the appropriate response
