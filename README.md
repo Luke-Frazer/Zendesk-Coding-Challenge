@@ -64,11 +64,12 @@ I hope that this code is what Zendesk is looking for and I look forward to any p
 
 UNIT TESTING:
 
-I had an approach for unit testing that the whole program should run through a single getProcess(), allowing for simplicity of use. Additionally, this allows for simple bug fixing due to the code being sectioned into individual methods for specific uses and thus, only one location for any set of code. 
+To run the unit testing code, enter the command: `javac -cp ./json-20210307.jar src/zcc_package/ZCC_Unit_tests.java` followed by `java -cp ./json-20210307.jar src/zcc_package/ZCC_Unit_tests.java`
+
+The code runs each individual method with messages to show which function is being called. It does not connect to the API, but rather uses a test.json file included in the folder for the ticket functionality. 
+
+Because it does not connect to the API, it can be ran without entering any credentials.
 
 Additionally, from my testing, I was able to enter any given values without errors due to my many checks for any given values in addition to many exception catches throughout the code. 
 
 The code accounts for the API/website being unavailable, invalid menu options, invalid search options, invalid page options, the tickets.json not being available, invalid credentials being entered, issues importing data, etc. 
-
-
-  
